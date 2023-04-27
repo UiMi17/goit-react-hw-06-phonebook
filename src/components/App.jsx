@@ -1,28 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { nanoid } from 'nanoid';
 import ContactsForm from './Contacts-form/ContactsForm';
 import ContactsList from './Contacts-list/ContactsList';
 import Filter from './Filter/Filter';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectContacts, selectFilter } from 'redux/contactsSelectors';
+import { addContact, deleteContact, setFilter } from 'redux/contactsSlice';
 import { StyledTitle } from './StyledTitle';
 
 export const App = () => {
-  // const [contacts, setContacts] = useState([]);
-  // const [filter, setFilter] = useState('');
-  const [isMounted, setIsMounted] = useState(false);
+  const contacts = useSelector(selectContacts);
+  const filter = useSelector(selectFilter);
 
-  useEffect(() => {
-    const USER_CONTACTS = JSON.parse(localStorage.getItem('user_contacts'));
-    if (USER_CONTACTS) {
-      setContacts(USER_CONTACTS);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isMounted) {
-      localStorage.setItem('user_contacts', JSON.stringify(contacts));
-    }
-    setIsMounted(true);
-  }, [contacts, isMounted]);
+  const dispatch = useDispatch();
 
   const createContact = ev => {
     const { name, number } = ev.target.elements;
@@ -34,12 +24,9 @@ export const App = () => {
     });
 
     if (!CONTACTS_NAMES.includes(USERNAME)) {
-      setContacts((prevState) => {
-        return [
-          ...prevState,
-          { name: USERNAME, number: USER_NUMBER, id: nanoid() },
-        ]
-      });
+      dispatch(
+        addContact({ name: USERNAME, number: USER_NUMBER, id: nanoid() })
+      );
     } else {
       alert(`${USERNAME} is already in contacts.`);
     }
@@ -48,17 +35,15 @@ export const App = () => {
   const handleFormSubmit = ev => {
     ev.preventDefault();
     createContact(ev);
-    ev.currentTarget.reset()
+    ev.currentTarget.reset();
   };
 
   const handleSearchInputChange = ev => {
-    setFilter(ev.target.value);
+    dispatch(setFilter(ev.target.value));
   };
 
-  const handleDeleteBtnClick = (id) => {
-    setContacts((prevState) => {
-      return prevState.filter(contact => contact.id !== id)
-    });
+  const handleDeleteBtnClick = id => {
+    dispatch(deleteContact(id));
   };
 
   const filteredContacts = contacts.filter(contact => {
