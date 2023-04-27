@@ -6,8 +6,8 @@ import Filter from './Filter/Filter';
 import { StyledTitle } from './StyledTitle';
 
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
+  // const [contacts, setContacts] = useState([]);
+  // const [filter, setFilter] = useState('');
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
