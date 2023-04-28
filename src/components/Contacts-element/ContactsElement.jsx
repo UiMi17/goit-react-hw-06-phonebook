@@ -26,5 +26,6 @@ export default ContactsListElement;
 ContactsListElement.propTypes = {
   name: PropTypes.string.isRequired,
   number: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   handleDeleteBtnClick: PropTypes.func.isRequired,
 };
